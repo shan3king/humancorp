@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming Soon</title>
+  <style>
+    @font-face {
+      font-family: 'Alte Haas Grotesk';
+      src: url('fonts/AlteHaasGroteskRegular.woff2') format('woff2'),
+           url('fonts/AlteHaasGroteskRegular.woff') format('woff');
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Alte Haas Grotesk';
+      src: url('fonts/AlteHaasGroteskBold.woff2') format('woff2'),
+           url('fonts/AlteHaasGroteskBold.woff') format('woff');
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #ffffff;
+      font-family: 'Alte Haas Grotesk', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      text-align: center;
+    }
+
+    .text-3d {
+      position: relative;
+      font-size: clamp(3rem, 12vw, 10rem);
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: transparent;
+      cursor: default;
+      user-select: none;
+    }
+
+    .text-3d::before,
+    .text-3d::after {
+      content: 'coming soon';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Cyan layer (left eye) */
+    .text-3d::before {
+      color: #00ffff;
+      transform: translateX(-8px);
+      mix-blend-mode: multiply;
+    }
+
+    /* Magenta layer (right eye) */
+    .text-3d::after {
+      color: #ff00ff;
+      transform: translateX(8px);
+      mix-blend-mode: multiply;
+    }
+
+    /* Parallax effect on mouse move */
+    .text-3d.parallax::before {
+      transition: transform 0.1s ease-out;
+    }
+
+    .text-3d.parallax::after {
+      transition: transform 0.1s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="text-3d parallax">coming soon</h1>
+  </div>
+
+  <script>
+    const text = document.querySelector('.text-3d');
+
+    document.addEventListener('mousemove', (e) => {
+      const x = (e.clientX / window.innerWidth - 0.5) * 2;
+      const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+      const cyanOffsetX = -8 - (x * 12);
+      const cyanOffsetY = y * 6;
+      const magentaOffsetX = 8 + (x * 12);
+      const magentaOffsetY = -y * 6;
+
+      text.style.setProperty('--cyan-x', `${cyanOffsetX}px`);
+      text.style.setProperty('--cyan-y', `${cyanOffsetY}px`);
+      text.style.setProperty('--magenta-x', `${magentaOffsetX}px`);
+      text.style.setProperty('--magenta-y', `${magentaOffsetY}px`);
+    });
+
+    // Update the CSS to use custom properties
+    const style = document.createElement('style');
+    style.textContent = `
+      .text-3d.parallax::before {
+        transform: translate(var(--cyan-x, -8px), var(--cyan-y, 0));
+      }
+      .text-3d.parallax::after {
+        transform: translate(var(--magenta-x, 8px), var(--magenta-y, 0));
+      }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
